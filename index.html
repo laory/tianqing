@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./font/iconfont.css">
+</head>
+
+<body>
+    <div class="tianqing">
+        <div class="banxing">
+            <header>
+                <div class="header-left">
+                    <div class="logo">LOGO</div>
+                </div>
+                <div class="header-right">
+                    <span class="iconfont icon-shezhi"></span>
+                    <span class="iconfont icon-xiaoxi"></span>
+                    <span class="logoOut">LOG OUT</span>
+                </div>
+
+            </header>
+            <main>
+                <!-- 标题 -->
+                <div class="mainTitle">
+                    <div class="big">Audience Overview</div>
+                    <div class="small">Roseville,CA</div>
+                </div>
+                <!-- 导航栏 -->
+                <div class="mainTab">
+                    <ul>
+                        <li class="cur">DASHBOAES</li>
+                        <li >PROJECTS</li>
+                        <li>CALNSAR</li>
+                        <li>MAILBOX</li>
+                        <li>ETTINGS</li>
+                    </ul>
+                </div>
+                <!-- 轮播图 -->
+                <div class="lubotu" id="lubotu">
+                    <div class="inner" id="inner">
+                        <ul class="imglist" id="imglist">
+                            <li><img alt="" src="https://via.placeholder.com/539x267/0000FF"></li>
+                            <li><img alt="" src="https://via.placeholder.com/539x267/0000FF"></li>
+                            <li><img alt="" src="https://via.placeholder.com/539x267/FF0000"></li>
+                            <li><img alt="" src="https://via.placeholder.com/539x267/FFFF00"></li>
+                            <li><img alt="" src="https://via.placeholder.com/539x267/000000"></li>
+                            <li><img alt="" src="https://via.placeholder.com/539x267/0000FF"></li>
+                        </ul>
+                        <!-- 轮播图底下按钮 -->
+                        <div class="list">
+                            <i class="current"></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                        </div>
+                        <!-- 轮播图左右箭头 -->
+                        <div class="arrow">
+                            <span class="arrow-left">&lt;</span>
+                            <span class="arrow-right">&gt;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Support Requests -->
+                <div class="Support">
+                    <div class="SupportTop">
+                        <div class="Requests">Support Requets</div>
+                        <div class="view">View All</div>
+                    </div>
+                    <div class="userMessage">
+                        <table>
+                            <tr>
+                                <th>TIME</th>
+                                <th>USER NAME</th>
+                                <th>STATUS</th>
+                            </tr>
+                            <tr>
+                                <td>9:45pm</td>
+                                <td>info@desjdf.com</td>
+                                <td>
+                                    Solved
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>9:45pm</td>
+                                <td>info@ldjf.com</td>
+                                <td>
+                                    Solved
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 折线图echarts -->
+                <div id="monthzhe" style="width: 1140px;height:349px"></div>
+                <!-- 饼图的echarts -->
+                <div id="weekbing" style="width: 560px;height:377px;display: inline-block;"></div>
+                <!-- 柱形的echarts -->
+                <div id="weekzhu" style="width: 560px;height:377px;display: inline-block;"></div>
+
+
+
+        </div>
+        </main>
+        <footer></footer>
+    </div>
+    </div>
+</body>
+
+</html>
+<script src="./js/jquery-1.12.4.js"></script>
+<script src="./js/animate.js"></script>
+<script src="./js/echarts.min.js"></script>
+<script>
+    // 导航栏 
+    var $liCurrent=$('.mainTab ul li')
+    $liCurrent.mouseenter(function(){
+    $(this).addClass('cur').siblings().removeClass('cur')
+    })
+    $liCurrent.click(function(){
+        $(this).addClass('enter').siblings().removeClass('enter')
+    })
+
+
+    // 轮播图
+    // 获取元素
+    var $box = $("#lubotu");
+    var $inner = $("#inner");
+    var $imglist = $inner.children('#imglist');
+    var $list = $inner.children('.list').children();
+    var $arrow = $inner.children('.arrow');
+    var $leftBtn = $arrow.children('.arrow-left');
+    var $rightBtn = $arrow.children('.arrow-right');
+    // 图片宽度
+    var imgWidth = $inner.width();
+
+    // 鼠标移入圆点，切换图片
+    $list.mouseenter(function () {
+        var index = $(this).index();
+        $list.eq(index).addClass('current').siblings().removeClass('current');
+        var target = index * imgWidth * -1;
+        $imglist.stop().animate({ left: target })
+    });
+
+    // 左右按钮
+    function moveRight() {
+        // 到达最后一张，切换到第一张
+        if (currentIndex === $imglist.children().length - 1) {
+            // 切换到最开始，同步索引
+            $imglist.css({ left: 0 });
+            currentIndex = 0;
+        }
+        // 图片索引自增
+        currentIndex++;
+        // 计算位置，重新设置
+        var target = currentIndex * imgWidth * -1;
+        $imglist.stop().animate({ left: target })
+        // 排他的设置圆点的样式
+        $list.siblings().removeClass('current');
+        // 如果是到达最后一张的时候，用户认为是第一张，直接设置第一个圆点的样式
+        if (currentIndex == $imglist.children().length - 1) {
+            $list.eq(0).addClass('current')
+        } else {
+            $list.eq(currentIndex).addClass('current');
+        }
+    }
+    var currentIndex = 0;
+    $rightBtn.click(moveRight);
+    $leftBtn.click(moveLeft);
+    function moveLeft() {
+        if (currentIndex === 0) {
+            currentIndex = $imglist.children().length - 1;
+            var pos = currentIndex * imgWidth * -1;
+            $imglist.css({ left: pos })
+        }
+        currentIndex--;
+        var target = currentIndex * imgWidth * -1;
+        $imglist.stop().animate({ left: target });
+        //排他的设置圆点
+        $list.eq(currentIndex).addClass('current').siblings().removeClass('current');
+    }
+
+    // 自动轮播
+    var autoPlayTime = 2000;
+    var timer = setInterval(moveRight, autoPlayTime);
+    // 鼠标悬停，停止自动轮播，鼠标移除恢复自动轮播  --  最好给大盒子
+    $box.hover(function () {
+        // 停止自动轮播
+        clearInterval(timer);
+    }, function () {
+        // 恢复自动轮播
+        timer = setInterval(moveRight, autoPlayTime);
+    });
+
+    //折线图月数据ajax请求
+    $.ajax({
+        type: 'GET',
+        url: "https://edu.telking.com/api/",
+        data: { type: 'month' },
+        dataType: 'json',
+        success: function (monthData) {
+            if (monthData.code === 200) {
+                let { series, xAxis } = monthData.data
+
+                // 折线 echarts
+                var zheChart = echarts.init(document.getElementById('monthzhe'));
+                option = {
+                    title: {
+                        text: '曲线图数据展示',
+                        left: 'center'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: xAxis,
+                        boundaryGap: ['20%','0%'],
+                        axisTick: { show: false },
+                        axisLine: {
+                            show: false
+                        },
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                type: 'dashed'
+                            }
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                        axisLabel: {
+                            formatter: function (val) {
+                                // return (val - base) * 100 + '%';
+                                if(val<2000){
+                                    return '0人'
+                                }else if(val<4000){
+                                    return '2,000人'
+                                }else if(val<6000){
+                                    return '4,000人'
+                                }else if(val<8000){
+                                    return '6,000人'
+                                }else if(val<10000){
+                                    return '8,000人'
+                                }else{
+                                    return '10,000人'
+                                }
+                            }
+                        },
+                    },
+                    series: [
+                        {
+                            areaStyle: {
+                                normal: {
+                                    color: '#f3f6fe' 
+                                }
+                            },
+                          
+                            itemStyle: {
+                                normal: {
+                                    color: '#4587ef', 
+                                    lineStyle: {
+                                        color: '#4587ef' 
+                                    }
+                                }
+                            },
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'top',
+                                    color: '#4587ef'
+                                }
+                            },
+                            data: series,
+                            type: 'line',
+                            smooth: true
+                        }]
+                };
+                zheChart.setOption(option);
+
+            }
+        }
+    })
+
+
+
+    // 周数据的ajax请求
+    $.ajax({
+        type: "GET",
+        url: "https://edu.telking.com/api/",
+        data: { type: 'week' },
+        dataType: "json",
+        success: function (weekData) {
+            if (weekData.code == 200) {
+                console.log(weekData)
+                // 将获取的周数据存到data数组对象中
+                let { series, xAxis } = weekData.data
+                var data = []
+                for (var i = 0; i < series.length; i++) {
+                    var j = {}
+                    j.value = series[i]
+                    data.push(j)
+                }
+                for (var i = 0; i < xAxis.length; i++) {
+                    data[i].name = xAxis[i]
+                }
+
+                // 扇形的echartApi
+                var shanChart = echarts.init(document.getElementById('weekbing'));
+                option = {
+                    title: {
+                        text: '饼状图数据展示',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            radius: '65%',
+                            center: ['50%', '50%'],
+                            selectedMode: 'single',
+                            data,
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                shanChart.setOption(option);
+
+                // 柱状图的echarts api
+                var zhuChart = echarts.init(document.getElementById('weekzhu'));
+
+                option = {
+                    color: ['#3398DB'],
+                    title: {
+                        text: '柱状图数据展示',
+                        left: 'center'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: xAxis,
+                        axisTick: { show: false },
+                        axisLine: {
+                            show: false
+                        },
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: '商品数',
+                        axisTick: { show: false },
+                        axisLine: {
+                            show: false
+                        },
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    series: [{
+                        data: series,
+                        type: 'bar',
+                        barWidth: '16px'
+                    }]
+                };
+                zhuChart.setOption(option)
+            }
+        }
+    });
+
+
+
+
+</script>
